@@ -4,9 +4,7 @@ export const formSchema = z.object({
   nomeCliente: z
     .string()
     .min(3, { message: "O nome deve ter no mínimo 3 caracteres." }),
-  telefone: z
-    .string()
-    .min(10, { message: "Digite um número de telefone válido." }),
+  telefone: z.string(),
   email: z
     .email({ message: "Digite um e-mail válido." })
     .optional()

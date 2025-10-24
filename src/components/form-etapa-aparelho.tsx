@@ -1,15 +1,17 @@
+"use client";
+
 import { Controller, type UseFormReturn } from "react-hook-form";
 import { Input } from "@/components/ui/input";
+import type { FormData } from "@/lib/schemas";
+import { Field, FieldError, FieldGroup, FieldLabel } from "./ui/field";
 import {
   Select,
   SelectContent,
   SelectItem,
   SelectTrigger,
   SelectValue,
-} from "@/components/ui/select";
-import { Textarea } from "@/components/ui/textarea";
-import type { FormData } from "@/lib/schemas";
-import { Field, FieldError, FieldGroup, FieldLabel } from "./ui/field";
+} from "./ui/select";
+import { Textarea } from "./ui/textarea";
 
 interface FormEtapaAparelhoProps {
   form: UseFormReturn<FormData>;
