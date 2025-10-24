@@ -46,7 +46,7 @@ export default function Home() {
 
   useEffect(() => {
     fetchOrders();
-  }, [fetchOrders]); 
+  }, [fetchOrders]);
 
   const handleOrderCreated = useCallback(() => {
     setIsModalOpen(false);
