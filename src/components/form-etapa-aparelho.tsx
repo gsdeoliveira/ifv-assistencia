@@ -90,6 +90,7 @@ export function FormEtapaAparelho({ form }: FormEtapaAparelhoProps) {
               <Textarea
                 {...field}
                 id="defeitoRelatado"
+                className="min-h-20"
                 placeholder="Cliente informou que o aparelho caiu na água e não liga mais..."
               />
               {fieldState.error && (

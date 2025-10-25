@@ -59,7 +59,6 @@ export function FormEtapaCliente({ form }: FormEtapaClienteProps) {
           render={({ field, fieldState }) => (
             <Field data-invalid={fieldState.invalid}>
               <FieldLabel htmlFor="nomeCliente">Nome do Cliente</FieldLabel>
-              {/* 5. A lógica do Combobox agora usa os dados do estado */}
               <Popover open={open} onOpenChange={setOpen}>
                 <PopoverTrigger asChild>
                   <Button

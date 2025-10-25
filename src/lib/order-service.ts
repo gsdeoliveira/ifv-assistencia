@@ -10,7 +10,7 @@ export type Client = {
 export type Order = {
   id: string;
   createdAt: string;
-  status: "Em Andamento" | "Ag. Retirada" | "Concluído";
+  status: string;
 
   tipoAparelho: "Celular" | "Tablet" | "Notebook" | string;
   marca: string;
@@ -20,21 +20,29 @@ export type Order = {
   clientId: string;
 };
 
+export type OrderWithClient = Order & {
+  client: Client;
+};
+
+export type FinancialEntry = {
+  id: string;
+  type: "Receita" | "Custo";
+  description: string;
+  amount: number;
+};
+
 export type ServiceResponse<T> = {
   success: boolean;
   data?: T;
   error?: string;
 };
 
-export type OrderWithClient = Order & {
-  client: Client;
-};
-
 const CLIENTS_KEY = "service-clients";
 const ORDERS_KEY = "service-orders";
+const FINANCIALS_KEY_PREFIX = "service-financials-"; // service-financials-[orderId]
 
 export async function getClients(): Promise<Client[]> {
-  await new Promise((resolve) => setTimeout(resolve, 1000));
+  await new Promise((resolve) => setTimeout(resolve, 300));
   try {
     const clients = JSON.parse(localStorage.getItem(CLIENTS_KEY) || "[]");
     return clients;
@@ -54,12 +62,13 @@ export async function createOrder(
     const { nomeCliente, telefone, email, ...applianceData } = data;
 
     const allClients: Client[] = await getClients();
-    let client = allClients.find((c) => c.telefone === telefone && c.telefone);
+    let client = allClients.find(
+      (c) => c.telefone === telefone && c.telefone !== "",
+    );
     let clientId: string;
 
     if (client) {
       clientId = client.id;
-      console.log("Cliente existente encontrado:", client);
     } else {
       client = {
         id: crypto.randomUUID(),
@@ -115,21 +124,15 @@ export async function getClientHistory(clientId: string): Promise<Order[]> {
 }
 
 export async function getOrdersWithClientDetails(): Promise<OrderWithClient[]> {
-  console.log("Buscando ordens com detalhes do cliente...");
-  await new Promise((resolve) => setTimeout(resolve, 1000));
+  await new Promise((resolve) => setTimeout(resolve, 500));
   try {
     const allOrders: Order[] = JSON.parse(
       localStorage.getItem(ORDERS_KEY) || "[]",
     );
     const allClients: Client[] = await getClients();
 
-    const clientMap = new Map<string, Client>();
-    allClients.forEach((client) => {
-      clientMap.set(client.id, client);
-    });
-
     const ordersWithClient = allOrders.map((order) => {
-      const client = clientMap.get(order.clientId);
+      const client = allClients.find((c) => c.id === order.clientId);
       return {
         ...order,
         client: client || {
@@ -139,10 +142,68 @@ export async function getOrdersWithClientDetails(): Promise<OrderWithClient[]> {
       };
     });
 
-    console.log("Ordens encontradas:", ordersWithClient);
     return ordersWithClient;
   } catch (error) {
-    console.error("Erro ao buscar ordens com detalhes:", error);
+    console.error("Erro ao buscar ordens com clientes:", error);
     return [];
+  }
+}
+
+export async function getOrderById(
+  id: string,
+): Promise<OrderWithClient | null> {
+  //sawait new Promise((resolve) => setTimeout(resolve, 500));
+  try {
+    const allOrders: Order[] = JSON.parse(
+      localStorage.getItem(ORDERS_KEY) || "[]",
+    );
+    const order = allOrders.find((o) => o.id === id);
+
+    if (!order) {
+      return null;
+    }
+
+    const allClients: Client[] = await getClients();
+    const client = allClients.find((c) => c.id === order.clientId);
+
+    return {
+      ...order,
+      client: client || {
+        id: "unknown",
+        nomeCliente: "Cliente Não Encontrado",
+      },
+    };
+  } catch (error) {
+    console.error("Erro ao buscar ordem por ID:", error);
+    return null;
+  }
+}
+
+export async function getFinancialEntries(
+  orderId: string,
+): Promise<FinancialEntry[]> {
+  await new Promise((resolve) => setTimeout(resolve, 200));
+  try {
+    const key = `${FINANCIALS_KEY_PREFIX}${orderId}`;
+    const entries = JSON.parse(localStorage.getItem(key) || "[]");
+    return entries;
+  } catch (error) {
+    console.error("Erro ao buscar lançamentos financeiros:", error);
+    return [];
+  }
+}
+
+export async function saveFinancialEntries(
+  orderId: string,
+  entries: FinancialEntry[],
+): Promise<ServiceResponse<true>> {
+  await new Promise((resolve) => setTimeout(resolve, 200));
+  try {
+    const key = `${FINANCIALS_KEY_PREFIX}${orderId}`;
+    localStorage.setItem(key, JSON.stringify(entries));
+    return { success: true, data: true };
+  } catch (error) {
+    console.error("Erro ao salvar lançamentos financeiros:", error);
+    return { success: false, error: "Falha ao salvar lançamentos." };
   }
 }
