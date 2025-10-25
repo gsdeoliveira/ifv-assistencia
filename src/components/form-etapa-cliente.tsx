@@ -138,11 +138,10 @@ export function FormEtapaCliente({ form }: FormEtapaClienteProps) {
                             value={searchQuery.toLowerCase()}
                             onSelect={() => {
                               form.setValue("nomeCliente", searchQuery, {
-                                shouldValidate: false, // NÃO valida
+                                shouldValidate: false,
                               });
                               form.setValue("telefone", "");
                               form.setValue("email", "");
-
                               setIsExistingClient(false);
                               setOpen(false);
                               setSearchQuery("");
@@ -172,14 +171,13 @@ export function FormEtapaCliente({ form }: FormEtapaClienteProps) {
               <MaskedInput
                 mask="(00) 00000-0000"
                 id="telefone"
-                placeholder="(85) 99999-9999"
+                placeholder={isExistingClient ? "" : "(85) 99999-9999"}
                 autoComplete="off"
                 value={value || ""}
                 onAccept={onChange}
                 onBlur={onBlur}
                 inputRef={ref}
-                readOnly={isExistingClient}
-                className={cn(isExistingClient ? "bg-muted" : "")}
+                disabled={isExistingClient}
               />
               {fieldState.error && (
                 <FieldError>{fieldState.error.message}</FieldError>
@@ -197,10 +195,9 @@ export function FormEtapaCliente({ form }: FormEtapaClienteProps) {
                 {...field}
                 id="email"
                 aria-invalid={fieldState.invalid}
-                placeholder="joao.silva@email.com"
+                placeholder={`${isExistingClient ? "" : "joao.silva@email.com"}`}
                 autoComplete="off"
-                readOnly={isExistingClient}
-                className={cn(isExistingClient ? "bg-muted" : "")}
+                disabled={isExistingClient}
               />
               {fieldState.error && (
                 <FieldError>{fieldState.error.message}</FieldError>

@@ -27,10 +27,10 @@ export default function RootLayout({
       <body className={`${roboto.variable} antialiased`}>
         <Header />
         <div className="hidden md:block">
-          <Toaster position="bottom-right" />
+          <Toaster richColors theme="light" position="bottom-right" />
         </div>
         <div className="md:hidden">
-          <Toaster position="top-center" />
+          <Toaster richColors theme="light" position="top-center" />
         </div>
         <ThemeProvider
           attribute="class"
