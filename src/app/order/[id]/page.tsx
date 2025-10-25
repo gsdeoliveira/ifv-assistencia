@@ -301,15 +301,22 @@ export default function OrderDetailPage() {
           </div>
 
           <div className="rounded-md border">
-            <Table>
-              <TableHeader>
-                <TableRow>
-                  <TableHead>Tipo</TableHead>
-                  <TableHead>Descrição</TableHead>
-                  <TableHead className="text-right">Valor</TableHead>
-                  <TableHead className="w-[50px]">Ação</TableHead>
-                </TableRow>
-              </TableHeader>
+            <Table className={`${entries.length > 0 ? "min-w-md" : ""}`}>
+              {entries.length > 0 && (
+                <TableHeader>
+                  <TableRow className="min-w-md">
+                    <TableHead className="w-[100px] text-left">Tipo</TableHead>
+                    <TableHead className="text-left flex-1">
+                      Descrição
+                    </TableHead>
+                    <TableHead className="text-center">Valor</TableHead>
+                    <TableHead className="w-[100px] text-center">
+                      Ação
+                    </TableHead>
+                  </TableRow>
+                </TableHeader>
+              )}
+
               <TableBody>
                 {entries.length === 0 && (
                   <TableRow>
@@ -322,8 +329,8 @@ export default function OrderDetailPage() {
                   </TableRow>
                 )}
                 {entries.map((entry) => (
-                  <TableRow key={entry.id}>
-                    <TableCell>
+                  <TableRow key={entry.id} className="min-w-md">
+                    <TableCell className="w-[100px] text-left">
                       <Badge
                         variant={
                           entry.type === "Receita" ? "default" : "destructive"
@@ -335,19 +342,21 @@ export default function OrderDetailPage() {
                         {entry.type}
                       </Badge>
                     </TableCell>
-                    <TableCell>{entry.description}</TableCell>
+                    <TableCell className="text-left flex-1">
+                      {entry.description}
+                    </TableCell>
                     <TableCell
                       className={cn(
-                        "text-right font-mono",
+                        "text-center font-mono",
                         entry.type === "Receita"
                           ? "text-green-600"
                           : "text-destructive",
                       )}
                     >
                       {entry.type === "Receita" ? "+" : "-"}
-                      {formatCurrency(entry.amount)}
+                      {entry.amount}
                     </TableCell>
-                    <TableCell>
+                    <TableCell className="text-center">
                       <Button
                         variant="ghost"
                         size="icon"

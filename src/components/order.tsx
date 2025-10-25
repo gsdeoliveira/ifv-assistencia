@@ -10,7 +10,7 @@ interface OrderProps {
 
 export function Order({ order }: OrderProps) {
   return (
-    <Link href={`/order/${order.id}`}>
+    <Link href={`/order/${order.id}`} prefetch={false}>
       <div className="hover:bg-accent cursor-pointer space-y-2 p-2 rounded-md border">
         <div className="flex justify-between items-center">
           <h2>{order.client.nomeCliente}</h2>

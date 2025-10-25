@@ -152,7 +152,6 @@ export async function getOrdersWithClientDetails(): Promise<OrderWithClient[]> {
 export async function getOrderById(
   id: string,
 ): Promise<OrderWithClient | null> {
-  //sawait new Promise((resolve) => setTimeout(resolve, 500));
   try {
     const allOrders: Order[] = JSON.parse(
       localStorage.getItem(ORDERS_KEY) || "[]",
